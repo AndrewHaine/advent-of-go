@@ -2,7 +2,6 @@ package main
 
 import (
 	"andrewhaine/advent-of-go/util/aoc"
-	"flag"
 	"slices"
 	"strconv"
 	"strings"
@@ -14,9 +13,7 @@ import (
 var input string
 
 func main() {
-	var part int
-	flag.IntVar(&part, "part", 1, "Part 1 or 2")
-	flag.Parse()
+	part := aoc.PartFlag()
 
 	if part == 1 {
 		aoc.PrintSolution(part1(input))
