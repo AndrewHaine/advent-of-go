@@ -1,11 +1,12 @@
 package main
 
 import (
-	"flag"
 	"log"
 	"os"
 	"path/filepath"
 	"strconv"
+
+	"github.com/manifoldco/promptui"
 )
 
 type SolutionDate struct {
@@ -14,26 +15,48 @@ type SolutionDate struct {
 }
 
 func main() {
-	var day = 0
-	var year = 0
-
-	flag.IntVar(&day, "day", 1, "Day of the month; 1-25")
-	flag.IntVar(&year, "year", 2023, "Year; 2015+")
-	flag.Parse()
-
-	if day == 0 {
-		log.Fatal("Please specify a day")
+	yearSelectTemplates := &promptui.SelectTemplates{
+		Active:   "\U0001F385 {{ . | bold }}",
+		Inactive: "   {{ . }}",
+		Selected: "\U0001F385 Year: {{ . | bold | faint }}",
 	}
 
-	if day > 25 {
-		log.Fatalf("Day %d is out of range", day)
+	yearPrompt := promptui.Select{
+		Label:     "Select Year",
+		Templates: yearSelectTemplates,
+		Items:     []int{2023, 2022, 2021, 2020, 2019, 2018, 2017, 2016, 2015},
+		Size:      10,
 	}
 
-	if year == 0 {
-		log.Fatal("Please specify a year")
+	_, year, yearErr := yearPrompt.Run()
+
+	if yearErr != nil {
+		log.Fatalf("Invalid year %v\n", yearErr)
 	}
 
-	date := SolutionDate{day, year}
+	daySelectTemplates := &promptui.SelectTemplates{
+		Active:   "\U0001F385 {{ . | bold }}",
+		Inactive: "   {{ . }}",
+		Selected: "\U0001F385 Day: {{ . | bold | faint }}",
+	}
+
+	dayPrompt := promptui.Select{
+		Label:     "Select Day",
+		Templates: daySelectTemplates,
+		Items:     []int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25},
+		Size:      10,
+	}
+
+	_, day, dayErr := dayPrompt.Run()
+
+	if dayErr != nil {
+		log.Fatalf("Invalid day sleected %v\n", dayErr)
+	}
+
+	dayValue, _ := strconv.Atoi(day)
+	yearValue, _ := strconv.Atoi(year)
+
+	date := SolutionDate{dayValue, yearValue}
 	dir := generateDir(date)
 
 	// Create a directory for the day
