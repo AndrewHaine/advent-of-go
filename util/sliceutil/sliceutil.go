@@ -15,3 +15,10 @@ func Chunk[T comparable](slice []T, size int) [][]T {
 	}
 	return chunks
 }
+
+func Pop[T comparable](slice []T) (T, []T) {
+	length := len(slice)
+	elem := slice[length-1]
+	slice = slice[:length-1]
+	return elem, slice
+}
