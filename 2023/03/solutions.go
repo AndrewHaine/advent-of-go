@@ -17,6 +17,18 @@ type Coordinate struct {
 	y int
 }
 
+// These are the movements/deltas on the x and y axis that are required to check all adjacent coordinates
+var adjacentDeltas = [][2]int{
+	{0, 1},
+	{1, 0},
+	{0, -1},
+	{-1, 0},
+	{-1, -1},
+	{-1, 1},
+	{1, 1},
+	{1, -1},
+}
+
 func main() {
 	part := aoc.PartFlag()
 
@@ -43,9 +55,9 @@ func part1(partInput string) string {
 	for y, row := range schematic {
 		x := 0
 		for x < len(row) {
-			coord := Coordinate{x, y}
-			if unicode.IsDigit(schematic[coord.y][coord.x]) {
-				group, isPart := checkPart(coord, schematic)
+			c := Coordinate{x, y}
+			if unicode.IsDigit(schematic[c.y][c.x]) {
+				group, isPart := checkPart(c, schematic)
 				if isPart {
 					partValue, _ := strconv.Atoi(group)
 					total += partValue
@@ -75,9 +87,9 @@ func part2(partInput string) string {
 	for y, row := range schematic {
 		x := 0
 		for x < len(row) {
-			coord := Coordinate{x, y}
-			if schematic[coord.y][coord.x] == '*' {
-				ratio, isGear := checkGear(coord, schematic)
+			c := Coordinate{x, y}
+			if schematic[c.y][c.x] == '*' {
+				ratio, isGear := checkGear(c, schematic)
 				if isGear {
 					total += ratio
 				}
@@ -91,38 +103,23 @@ func part2(partInput string) string {
 
 // Returns the value of the number and whether there's a symbol around it
 func checkPart(c Coordinate, schematic map[int][]rune) (string, bool) {
-	directions := [][2]int{
-		{0, 1},
-		{1, 0},
-		{0, -1},
-		{-1, 0},
-		{-1, -1},
-		{-1, 1},
-		{1, 1},
-		{1, -1},
-	}
-
-	groupRunes := []rune{}
-	groupLength := 0
-
-	for c.x+groupLength < len(schematic[c.y]) && unicode.IsDigit(schematic[c.y][c.x+groupLength]) {
-		groupRunes = append(groupRunes, schematic[c.y][c.x+groupLength])
-		groupLength += 1
-	}
+	part, _ := getPartFromCoordinate(c, schematic)
+	partString := strconv.Itoa(part)
+	partLength := len(partString)
 
 	var neighbourContainsSymbol = false
 
 	currentX := c.x
-	for groupLength > 0 {
-		for _, delta := range directions {
-			newX := currentX + delta[0]
-			newY := c.y + delta[1]
 
-			if newY == -1 || newX == -1 || newY == len(schematic) || newX == len(schematic[c.y]) {
+	for partLength > 0 {
+		for _, delta := range adjacentDeltas {
+			adjacentCoordinate := Coordinate{currentX + delta[0], c.y + delta[1]}
+
+			if !isValidCoordinate(adjacentCoordinate, schematic) {
 				continue
 			}
 
-			value := schematic[newY][newX]
+			value := schematic[adjacentCoordinate.y][adjacentCoordinate.x]
 
 			if !unicode.IsDigit(rune(value)) && value != '.' {
 				neighbourContainsSymbol = true
@@ -130,79 +127,47 @@ func checkPart(c Coordinate, schematic map[int][]rune) (string, bool) {
 			}
 		}
 		currentX += 1
-		groupLength -= 1
+		partLength -= 1
 	}
 
-	groupString := string(groupRunes)
-
-	return groupString, neighbourContainsSymbol
+	return partString, neighbourContainsSymbol
 }
 
 func checkGear(c Coordinate, schematic map[int][]rune) (int, bool) {
 	isGear := false
 	ratio := 0
 
-	directions := [][2]int{
-		{0, 1},
-		{1, 0},
-		{0, -1},
-		{-1, 0},
-		{-1, -1},
-		{-1, 1},
-		{1, 1},
-		{1, -1},
-	}
-
-	coordsToCheck := []Coordinate{}
+	neighbourCoordinates := []Coordinate{}
 	partNeighbours := []int{}
 
-	for _, delta := range directions {
-		newX := c.x + delta[0]
-		newY := c.y + delta[1]
+	for _, delta := range adjacentDeltas {
+		adjacentCoordinate := Coordinate{c.x + delta[0], c.y + delta[1]}
 
-		if newY == -1 || newX == -1 || newY == len(schematic) || newX == len(schematic[c.y]) {
+		if !isValidCoordinate(adjacentCoordinate, schematic) {
 			continue
 		}
 
-		value := schematic[newY][newX]
+		value := schematic[adjacentCoordinate.y][adjacentCoordinate.x]
 
 		if unicode.IsDigit(rune(value)) {
-			coordsToCheck = append(coordsToCheck, Coordinate{newX, newY})
+			neighbourCoordinates = append(neighbourCoordinates, adjacentCoordinate)
 		}
 	}
 
-	seenCoords := map[Coordinate]bool{}
+	visitedCoordinates := map[Coordinate]bool{}
 
-	for _, coord := range coordsToCheck {
-		if seenCoords[coord] {
+	for _, neighbour := range neighbourCoordinates {
+		// If we've already seen this one don't process it again, this will result in parts registering multiple times
+		if visitedCoordinates[neighbour] {
 			continue
 		}
 
-		seenCoords[coord] = true
+		partValue, visitedDuringCheck := getPartFromCoordinate(neighbour, schematic)
 
-		// Look ahead and back to group numbers
-		lowestX := coord.x
-		highestX := coord.x
-
-		for lowestX != 0 && unicode.IsDigit(schematic[coord.y][lowestX-1]) {
-			lowestX -= 1
+		for _, visited := range visitedDuringCheck {
+			visitedCoordinates[visited] = true
 		}
 
-		for highestX+1 < len(schematic[0]) && unicode.IsDigit(schematic[coord.y][highestX+1]) {
-			highestX += 1
-		}
-
-		partDigits := []rune{}
-
-		for lowestX <= highestX {
-			checkingCoord := Coordinate{lowestX, coord.y}
-			partDigits = append(partDigits, schematic[checkingCoord.y][checkingCoord.x])
-			seenCoords[checkingCoord] = true
-			lowestX += 1
-		}
-
-		partString := string(partDigits)
-		partValue, _ := strconv.Atoi(partString)
 		partNeighbours = append(partNeighbours, partValue)
 	}
 
@@ -212,4 +177,38 @@ func checkGear(c Coordinate, schematic map[int][]rune) (int, bool) {
 	}
 
 	return ratio, isGear
+}
+
+func isValidCoordinate(coordinate Coordinate, schematic map[int][]rune) bool {
+	return (coordinate.y > -1 &&
+		coordinate.x > -1 &&
+		coordinate.y < len(schematic) &&
+		coordinate.x < len(schematic[coordinate.y]))
+}
+
+func getPartFromCoordinate(coordinate Coordinate, schematic map[int][]rune) (int, []Coordinate) {
+	visitedCoordinates := []Coordinate{}
+	startX := coordinate.x
+	lowestX, highestX := startX, startX
+
+	for lowestX != 0 && unicode.IsDigit(schematic[coordinate.y][lowestX-1]) {
+		lowestX -= 1
+	}
+
+	for highestX+1 < len(schematic[0]) && unicode.IsDigit(schematic[coordinate.y][highestX+1]) {
+		highestX += 1
+	}
+
+	partDigits := []rune{}
+
+	for lowestX <= highestX {
+		checkingCoordinate := Coordinate{lowestX, coordinate.y}
+		visitedCoordinates = append(visitedCoordinates, checkingCoordinate)
+		partDigits = append(partDigits, schematic[checkingCoordinate.y][checkingCoordinate.x])
+		lowestX += 1
+	}
+
+	partString := string(partDigits)
+	partValue, _ := strconv.Atoi(partString)
+	return partValue, visitedCoordinates
 }
