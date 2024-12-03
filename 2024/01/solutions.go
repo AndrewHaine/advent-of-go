@@ -35,7 +35,7 @@ func part1(partInput string) string {
 
 	for i, firstLocationId := range lists[0] {
 		secondLocationId := lists[1][i]
-		
+
 		// Go std has no absolute calculation so we ensure we're getting a positive integer for the distance
 		if secondLocationId > firstLocationId {
 			distance += secondLocationId - firstLocationId

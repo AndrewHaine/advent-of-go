@@ -53,7 +53,7 @@ func part2(partInput string) string {
 	roboSantaPosition := Coordinate{0, 0}
 
 	for i, instruction := range parsed {
-		if (i % 2 == 0) {
+		if i%2 == 0 {
 			santaPosition = moveCoordinate(santaPosition, instruction)
 			trackVisitedCoordinate(&visitedMap, santaPosition)
 			continue

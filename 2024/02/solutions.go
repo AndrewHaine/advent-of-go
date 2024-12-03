@@ -60,27 +60,27 @@ func part2(partInput string) string {
 
 func isReportSafe(report string) bool {
 	levels := strings.Split(report, " ")
-	
+
 	safe := true
 	previousLevelDelta := 0
 
 	for i, level := range levels {
 		// Nothing to compare on the first level
 		if i == 0 {
-			continue;
+			continue
 		}
 
 		curr, _ := strconv.Atoi(level)
-		prev, _ := strconv.Atoi(levels[i - 1])
+		prev, _ := strconv.Atoi(levels[i-1])
 
 		// Get the difference between the current and previous level
 		levelDelta := curr - prev
-		absoluteDelta := math.Abs(float64(levelDelta));
+		absoluteDelta := math.Abs(float64(levelDelta))
 
 		// Check of the delta is greater than 3 or zero
 		if absoluteDelta > 3 || absoluteDelta == 0 {
-		 safe = false;
-		 break;
+			safe = false
+			break
 		}
 
 		// Check if the signs on the delta are different (i.e a change from increasing -> decreasing)
@@ -90,13 +90,13 @@ func isReportSafe(report string) bool {
 
 		// We don't have a previous delta until we hit at least item 3
 		if i > 1 && currentDeltaIsDecreasing != previousDeltaIsDecreasing {
-			safe = false;
-			break;
+			safe = false
+			break
 		}
 
 		previousLevelDelta = levelDelta
 	}
-	
+
 	return safe
 }
 
@@ -105,12 +105,11 @@ func isReportSafeWithOneRemoved(report string) bool {
 	safe := false
 
 	for i := range levels {
-		levelsWithIndexRemoved := slices.Concat(levels[:i], levels[i + 1:])
+		levelsWithIndexRemoved := slices.Concat(levels[:i], levels[i+1:])
 		newReport := strings.Join(levelsWithIndexRemoved, " ")
 
-
 		if isReportSafe(newReport) {
-			safe = true;
+			safe = true
 			break
 		}
 	}

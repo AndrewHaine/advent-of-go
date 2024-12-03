@@ -52,7 +52,7 @@ func stringIsNicePart1(inputString string) bool {
 	vowels := []rune{'a', 'e', 'i', 'o', 'u'}
 	vowelCount := 0
 	containsLetterPair := false
-	disallowedStringPairs := [][2]rune{{'a','b'}, {'c','d'}, {'p','q'}, {'x','y'}}
+	disallowedStringPairs := [][2]rune{{'a', 'b'}, {'c', 'd'}, {'p', 'q'}, {'x', 'y'}}
 	containsDisallowedStringPair := false
 
 	for i, letter := range inputString {
@@ -85,7 +85,7 @@ func stringIsNicePart1(inputString string) bool {
 func stringIsNicePart2(inputString string) bool {
 	containsRepeatingLetterPair := false
 	containsSeparatedRepeatedLetter := false
-	
+
 	for i, letter := range inputString {
 		if containsRepeatingLetterPair && containsSeparatedRepeatedLetter {
 			break

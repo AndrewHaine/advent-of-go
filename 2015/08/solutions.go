@@ -59,6 +59,6 @@ func getCodeCharLength(inputString string) int {
 }
 
 func getMemoryCharLength(inputString string) int {
-	unquoted, _ := strconv.Unquote(inputString);
+	unquoted, _ := strconv.Unquote(inputString)
 	return len(unquoted)
 }

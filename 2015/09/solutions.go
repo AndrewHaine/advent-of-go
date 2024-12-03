@@ -46,13 +46,13 @@ func part1(partInput string) string {
 	for _, permutation := range allPermutations {
 		distanceForPermutation := 0
 		for i, location := range permutation {
-			if i == len(permutation) - 1 {
+			if i == len(permutation)-1 {
 				break
 			}
 
-			distanceForPermutation += matrix[location][permutation[i + 1]]
+			distanceForPermutation += matrix[location][permutation[i+1]]
 		}
-		
+
 		if distanceForPermutation < shortestDistance {
 			shortestDistance = distanceForPermutation
 		}
@@ -80,13 +80,13 @@ func part2(partInput string) string {
 	for _, permutation := range allPermutations {
 		distanceForPermutation := 0
 		for i, location := range permutation {
-			if i == len(permutation) - 1 {
+			if i == len(permutation)-1 {
 				break
 			}
 
-			distanceForPermutation += matrix[location][permutation[i + 1]]
+			distanceForPermutation += matrix[location][permutation[i+1]]
 		}
-		
+
 		if distanceForPermutation > longestDistance {
 			longestDistance = distanceForPermutation
 		}
@@ -97,12 +97,12 @@ func part2(partInput string) string {
 
 func generateLocationMatrixFromInput(inputDistances []string) LocationMatrix {
 	matrix := LocationMatrix{}
-	
+
 	inputRegex := regexp.MustCompile(`([a-zA-Z]+) to ([a-zA-Z]+) = (\d+)`)
 
 	for _, inputString := range inputDistances {
 		parts := inputRegex.FindStringSubmatch(inputString)
-		
+
 		from, to, distanceString := parts[1], parts[2], parts[3]
 		distance, _ := strconv.Atoi(distanceString)
 
@@ -112,7 +112,7 @@ func generateLocationMatrixFromInput(inputDistances []string) LocationMatrix {
 		} else {
 			matrix[from][to] = distance
 		}
-		
+
 		if _, ok := matrix[to]; !ok {
 			locationDistance := LocationDistanceMap{from: distance}
 			matrix[to] = locationDistance
@@ -132,9 +132,9 @@ func getHeapPermutations(values []string, size int, allPermutations *[][]string)
 	}
 
 	for i := 0; i < size; i++ {
-		getHeapPermutations(values, size - 1, allPermutations)
+		getHeapPermutations(values, size-1, allPermutations)
 
-		if size % 2 == 1 {
+		if size%2 == 1 {
 			values[0], values[size-1] = values[size-1], values[0]
 		} else {
 			values[i], values[size-1] = values[size-1], values[i]

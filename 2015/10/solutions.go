@@ -24,7 +24,7 @@ func main() {
 func part1(partInput string) string {
 	inputString := aoc.ParseInput(partInput)
 
-	currString := inputString;
+	currString := inputString
 
 	for i := 0; i < 40; i++ {
 		currString = lookAndSayString(currString)
@@ -38,7 +38,7 @@ func part1(partInput string) string {
 func part2(partInput string) string {
 	inputString := aoc.ParseInput(partInput)
 
-	currString := inputString;
+	currString := inputString
 
 	for i := 0; i < 50; i++ {
 		currString = lookAndSayString(currString)
@@ -60,11 +60,11 @@ func lookAndSayString(look string) (say string) {
 			currCount++
 
 			// If we're on the last character finish writing to the buffer
-			if i == len(look) - 1 {
+			if i == len(look)-1 {
 				sayBuilder.WriteString(strconv.Itoa(currCount))
 				sayBuilder.WriteRune(currRune)
 			}
-		
+
 			continue
 		}
 
@@ -75,7 +75,7 @@ func lookAndSayString(look string) (say string) {
 		currCount = 1
 
 		// If we're on the last character finish writing to the buffer
-		if i == len(look) - 1 {
+		if i == len(look)-1 {
 			sayBuilder.WriteString(strconv.Itoa(currCount))
 			sayBuilder.WriteRune(currRune)
 		}

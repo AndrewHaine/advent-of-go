@@ -26,7 +26,7 @@ func part1(partInput string) string {
 	floor := 0
 
 	for _, instruction := range instructions {
-		if (instruction == '(') {
+		if instruction == '(' {
 			floor++
 		} else {
 			floor--
@@ -48,7 +48,7 @@ func part2(partInput string) string {
 			break
 		}
 
-		if (instruction == '(') {
+		if instruction == '(' {
 			floor++
 		} else {
 			floor--

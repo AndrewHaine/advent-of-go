@@ -38,9 +38,9 @@ func part1(partInput string) string {
 		hasher.Write(buffer.Bytes())
 
 		md5String := hex.EncodeToString(hasher.Sum(nil))
-		md5Prefix := md5String[:5];
+		md5Prefix := md5String[:5]
 
-		if (md5Prefix == "00000") {
+		if md5Prefix == "00000" {
 			break
 		}
 
@@ -65,9 +65,9 @@ func part2(partInput string) string {
 		hasher.Write(buffer.Bytes())
 
 		md5String := hex.EncodeToString(hasher.Sum(nil))
-		md5Prefix := md5String[:6];
+		md5Prefix := md5String[:6]
 
-		if (md5Prefix == "000000") {
+		if md5Prefix == "000000" {
 			break
 		}
 

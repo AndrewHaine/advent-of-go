@@ -27,16 +27,16 @@ func part1(partInput string) string {
 	parsed := aoc.ParseInput(partInput)
 	presents := strings.Split(parsed, "\n")
 
-	totalWrappingPaperAreaSqFeet := 0;
+	totalWrappingPaperAreaSqFeet := 0
 
 	for _, present := range presents {
-		
+
 		l, w, h := getPresentMeasurements(present)
 		presentAreaSqFeet := 2*l*w + 2*w*h + 2*h*l
 
 		// Find the smallest side and add the area
 		measurements := []int{l, w, h}
-		sort.Ints(measurements);
+		sort.Ints(measurements)
 
 		presentAreaSqFeet += (measurements[0] * measurements[1])
 
@@ -58,7 +58,7 @@ func part2(partInput string) string {
 		perimiters := []int{l + w, l + h, w + h}
 		sort.Ints(perimiters)
 
-		presentVolume := l*w*h
+		presentVolume := l * w * h
 		wrapAroundRibbonLength := 2 * perimiters[0]
 
 		totalRibbonLengthFeet += presentVolume + wrapAroundRibbonLength
@@ -70,7 +70,7 @@ func part2(partInput string) string {
 func getPresentMeasurements(present string) (length int, width int, height int) {
 	dimensionsRegex := regexp.MustCompile(`(\d+)x(\d+)x(\d+)`)
 	matches := dimensionsRegex.FindStringSubmatch(present)
-	
+
 	l, _ := strconv.Atoi(matches[1])
 	w, _ := strconv.Atoi(matches[2])
 	h, _ := strconv.Atoi(matches[3])

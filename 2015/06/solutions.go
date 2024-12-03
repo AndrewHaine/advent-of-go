@@ -18,7 +18,7 @@ type Coordinate struct {
 	y int
 }
 
-type BulbCallbackFunc func (bulbs *Bulbs, bulbIndex int, action string)
+type BulbCallbackFunc func(bulbs *Bulbs, bulbIndex int, action string)
 
 func main() {
 	part := aoc.PartFlag()
@@ -72,7 +72,7 @@ func part2(partInput string) string {
 
 func processInstruction(instruction string, bulbs *Bulbs, performActionOnBulb BulbCallbackFunc) {
 	rowLength := 1_000
-	
+
 	instructionRegex := regexp.MustCompile(`(turn on|turn off|toggle) (\d+),(\d+) through (\d+),(\d+)`)
 	parsedInstruction := instructionRegex.FindStringSubmatch(instruction)
 
@@ -83,7 +83,7 @@ func processInstruction(instruction string, bulbs *Bulbs, performActionOnBulb Bu
 	endY, _ := strconv.Atoi(parsedInstruction[5])
 
 	for y := startY; y <= endY; y++ {
-		for x:= startX; x <= endX; x++ {
+		for x := startX; x <= endX; x++ {
 			i := getBulbFromCoordinate(Coordinate{x, y}, rowLength)
 			performActionOnBulb(bulbs, i, action)
 		}
@@ -93,7 +93,7 @@ func processInstruction(instruction string, bulbs *Bulbs, performActionOnBulb Bu
 func performActionOnBulbPart1(bulbs *Bulbs, bulbIndex int, action string) {
 	switch action {
 	case "turn on":
-		bulbs[bulbIndex] = 1;
+		bulbs[bulbIndex] = 1
 	case "turn off":
 		bulbs[bulbIndex] = 0
 	case "toggle":
@@ -107,11 +107,11 @@ func performActionOnBulbPart1(bulbs *Bulbs, bulbIndex int, action string) {
 func performActionOnBulbPart2(bulbs *Bulbs, bulbIndex int, action string) {
 	switch action {
 	case "turn on":
-		bulbs[bulbIndex]++;
+		bulbs[bulbIndex]++
 	case "turn off":
-		bulbs[bulbIndex] = max(bulbs[bulbIndex] -1, 0)
+		bulbs[bulbIndex] = max(bulbs[bulbIndex]-1, 0)
 	case "toggle":
-		bulbs[bulbIndex] += 2;
+		bulbs[bulbIndex] += 2
 	}
 }
 

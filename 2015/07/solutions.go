@@ -51,7 +51,7 @@ func part2(partInput string) string {
 
 func generateWireSignalMapFromDefinitions(definitions []string) WireSignalMap {
 	wireSignalMap := WireSignalMap{}
-	wireSignalRegex := regexp.MustCompile(`(.*) -> ([a-z]+)`);
+	wireSignalRegex := regexp.MustCompile(`(.*) -> ([a-z]+)`)
 
 	for _, definition := range definitions {
 		matches := wireSignalRegex.FindStringSubmatch(definition)
@@ -71,7 +71,7 @@ func getSignalForWire(wire string, wireSignalMap *WireSignalMap) string {
 
 	var signal uint16
 
-	signalOperationRegex := regexp.MustCompile(`([a-z]+|\d+)?\s?(AND|OR|NOT|LSHIFT|RSHIFT)?\s?([a-z]+|\d+)?`);
+	signalOperationRegex := regexp.MustCompile(`([a-z]+|\d+)?\s?(AND|OR|NOT|LSHIFT|RSHIFT)?\s?([a-z]+|\d+)?`)
 	parts := signalOperationRegex.FindStringSubmatch(signalValue)
 	left, action, right := parts[1], parts[2], parts[3]
 
@@ -81,18 +81,18 @@ func getSignalForWire(wire string, wireSignalMap *WireSignalMap) string {
 	if left != "" && !leftIsNumerical {
 		left = getSignalForWire(left, wireSignalMap)
 	}
-	
+
 	if right != "" && !rightIsNumerical {
 		right = getSignalForWire(right, wireSignalMap)
 	}
 
-	switch (action) {
+	switch action {
 	case "AND":
 		signal = stringToUint16(left) & stringToUint16(right)
 	case "OR":
 		signal = stringToUint16(left) | stringToUint16(right)
 	case "NOT":
-		signal =  ^stringToUint16(right)
+		signal = ^stringToUint16(right)
 	case "LSHIFT":
 		signal = stringToUint16(left) << stringToUint16(right)
 	case "RSHIFT":
